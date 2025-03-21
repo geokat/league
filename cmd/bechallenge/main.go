@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"log/slog"
 	h "net/http"
 	"os"
@@ -38,5 +39,5 @@ func main() {
 	// Stream API (example).
 	h.HandleFunc("/stream/echo", handleEchoStream)
 
-	h.ListenAndServe(":8080", nil)
+	log.Fatal(h.ListenAndServe(":8080", nil))
 }
