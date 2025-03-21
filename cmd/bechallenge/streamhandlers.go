@@ -9,6 +9,8 @@ import (
 	"strings"
 )
 
+// Not using http.Error() when handling errors here as setting headers
+// in the middle of a stream is impossible.
 func handleEchoStream(w h.ResponseWriter, r *h.Request) {
 	rdr := csv.NewReader(r.Body)
 	for {
@@ -16,15 +18,19 @@ func handleEchoStream(w h.ResponseWriter, r *h.Request) {
 		if err != nil {
 			var pe *csv.ParseError
 
-			// Not using http.Error() here as setting headers in
-			// the middle of a stream is impossible.
 			if err == io.EOF {
 				break
 			} else if errors.As(err, &pe) {
-				fmt.Fprintln(w, "Error: parsing CSV: "+pe.Error())
+				_, err := fmt.Fprintln(w, "Error: parsing CSV: "+pe.Error())
+				if err != nil {
+					l.Error("writing response error message", "error", err)
+				}
 			} else {
 				l.Error("parsing CSV", "err", err)
-				fmt.Fprintln(w, "Unexpected error")
+				_, err := fmt.Fprintln(w, "Unexpected error")
+				if err != nil {
+					l.Error("writing response error message", "error", err)
+				}
 			}
 			return
 		}

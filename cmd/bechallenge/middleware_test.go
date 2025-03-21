@@ -1,10 +1,8 @@
 package main
 
 import (
-	"bytes"
 	"io"
 	"log/slog"
-	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -18,18 +16,18 @@ func init() {
 func TestWebApiMiddleware(t *testing.T) {
 	tests := []struct {
 		name       string
-		file       []byte
+		payload    []byte
 		wantBody   string
 		wantStatus int
 	}{
 		{
-			"file-too-large",
+			"huge-file",
 			make([]byte, maxUploadSize+1),
-			"Error: file upload size limit (10485760 bytes) exceeded",
+			"Error: file upload size limit (10485760 bytes) exceeded\n",
 			400,
 		},
 		{
-			"file-empty",
+			"empty-csv",
 			[]byte{},
 			"",
 			200,
@@ -37,7 +35,13 @@ func TestWebApiMiddleware(t *testing.T) {
 		{
 			"non-square-matrix",
 			[]byte("1,2,3"),
-			"Error: matrix is not square",
+			"Error: matrix is not square\n",
+			400,
+		},
+		{
+			"invalid-csv",
+			[]byte("1,2,3\n4,3,5,7,8,9,"),
+			"Error parsing CSV: record on line 2: wrong number of fields\n",
 			400,
 		},
 	}
@@ -46,34 +50,7 @@ func TestWebApiMiddleware(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			buf := new(bytes.Buffer)
-			writer := multipart.NewWriter(buf)
-			fWriter, err := writer.CreateFormFile("file", "file")
-			if err != nil {
-				t.Fatalf("unexpected multipart error %v", err)
-			}
-
-			_, err = fWriter.Write(tt.file)
-			if err != nil {
-				t.Fatalf("unexpected write error %v", err)
-			}
-
-			if err := writer.Close(); err != nil {
-				t.Fatalf("unexpected writer close error %v", err)
-			}
-
-			r := httptest.NewRequest("POST", "/", buf)
-			r.Header.Set("Content-Type", writer.FormDataContentType())
-
-			w := httptest.NewRecorder()
-
-			h.ServeHTTP(w, r)
-
-			if w.Code != tt.wantStatus {
-				t.Errorf(
-					"Status code mismatch: got %d; want %d",
-					w.Code, tt.wantStatus)
-			}
+			runFormFileTestCase(t, h, tt.payload, tt.wantBody, tt.wantStatus)
 		})
 	}
 }

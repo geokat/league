@@ -73,6 +73,7 @@ func reduce(w h.ResponseWriter, r *h.Request, multiply bool) {
 		}
 	}
 
+	// The challenge description requires a trailing "\n" in the response.
 	fmt.Fprint(w, resp, "\n")
 }
 

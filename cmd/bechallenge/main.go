@@ -17,7 +17,7 @@ const (
 var l *slog.Logger
 
 func init() {
-	// Include source code number in log entries.
+	// Include source code line number in log entries.
 	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
 		AddSource: true,
 	}))
