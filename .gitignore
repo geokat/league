@@ -1,2 +1,6 @@
 bechallenge
 !bechallenge/
+run_watch.sh
+run_watch_tests.sh
+generate.py
+random.csv

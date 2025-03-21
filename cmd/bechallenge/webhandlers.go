@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math/big"
 	h "net/http"
 )
 
@@ -45,11 +46,11 @@ func reduce(w h.ResponseWriter, r *h.Request, multiply bool) {
 		return
 	}
 
-	var resp int
+	resp := new(big.Int)
 
 	// Zero value of int would turn every product to 0.
 	if multiply {
-		resp = 1
+		resp.SetInt64(1)
 	}
 
 	// Process the CSV rows and build the response inline.
@@ -66,9 +67,9 @@ func reduce(w h.ResponseWriter, r *h.Request, multiply bool) {
 
 		for _, int := range ints {
 			if multiply {
-				resp *= int
+				resp.Mul(resp, int)
 			} else {
-				resp += int
+				resp.Add(resp, int)
 			}
 		}
 	}
@@ -121,7 +122,7 @@ func handleInvert(w h.ResponseWriter, r *h.Request) {
 	recs := r.Context().Value(csvRecordsKey).([][]string)
 
 	// Transposed matrix.
-	tran := make([][]int, len(recs))
+	tran := make([][]*big.Int, len(recs))
 
 	// Process the CSV rows.
 	for ri, row := range recs {

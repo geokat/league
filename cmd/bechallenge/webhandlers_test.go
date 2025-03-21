@@ -25,12 +25,6 @@ func TestHandleEcho(t *testing.T) {
 			200,
 		},
 		{
-			"out-of-range-elements-csv",
-			[]byte("9223372036854775808"),
-			"Error: parsing CSV: record on line 1: strconv.Atoi: parsing \"9223372036854775808\": value out of range\n",
-			400,
-		},
-		{
 			"only-empty-lines",
 			[]byte("\n\n\n\n\r\n"),
 			"\n",
@@ -45,19 +39,19 @@ func TestHandleEcho(t *testing.T) {
 		{
 			"non-integer-literals",
 			[]byte("1, 2, -3.234\n1,-2.121,3\n1.983,2,-3\n"),
-			"Error: parsing CSV: record on line 1: strconv.Atoi: parsing \"-3.234\": invalid syntax\n",
+			"Error: parsing CSV: record on line 1: parsing \"-3.234\": invalid syntax\n",
 			400,
 		},
 		{
 			"non-numeric-literals",
 			[]byte("1&fl-, 2,3\n1fl-, 2,3\n1fl-,2,3\n"),
-			"Error: parsing CSV: record on line 1: strconv.Atoi: parsing \"1&fl-\": invalid syntax\n",
+			"Error: parsing CSV: record on line 1: parsing \"1&fl-\": invalid syntax\n",
 			400,
 		},
 		{
 			"only-commas",
 			[]byte(",,\n,,\n,,\n"),
-			"Error: parsing CSV: record on line 1: strconv.Atoi: parsing \"\": invalid syntax\n",
+			"Error: parsing CSV: record on line 1: parsing \"\": invalid syntax\n",
 			400,
 		},
 		{
@@ -110,12 +104,6 @@ func TestHandleFlatten(t *testing.T) {
 			200,
 		},
 		{
-			"out-of-range-elements-csv",
-			[]byte("9223372036854775808"),
-			"Error: parsing CSV: record on line 1: strconv.Atoi: parsing \"9223372036854775808\": value out of range\n",
-			400,
-		},
-		{
 			"only-empty-lines",
 			[]byte("\n\n\n\n\r\n"),
 			"\n",
@@ -130,19 +118,19 @@ func TestHandleFlatten(t *testing.T) {
 		{
 			"non-integer-literals",
 			[]byte("1, 2, -3.234\n1,-2.121,3\n1.983,2,-3\n"),
-			"Error: parsing CSV: record on line 1: strconv.Atoi: parsing \"-3.234\": invalid syntax\n",
+			"Error: parsing CSV: record on line 1: parsing \"-3.234\": invalid syntax\n",
 			400,
 		},
 		{
 			"non-numeric-literals",
 			[]byte("1&fl-, 2,3\n1fl-, 2,3\n1fl-,2,3\n"),
-			"Error: parsing CSV: record on line 1: strconv.Atoi: parsing \"1&fl-\": invalid syntax\n",
+			"Error: parsing CSV: record on line 1: parsing \"1&fl-\": invalid syntax\n",
 			400,
 		},
 		{
 			"only-commas",
 			[]byte(",,\n,,\n,,\n"),
-			"Error: parsing CSV: record on line 1: strconv.Atoi: parsing \"\": invalid syntax\n",
+			"Error: parsing CSV: record on line 1: parsing \"\": invalid syntax\n",
 			400,
 		},
 		{
@@ -183,6 +171,12 @@ func TestHandleSum(t *testing.T) {
 			200,
 		},
 		{
+			"large-integers",
+			[]byte("-12345678901234567890,0,0\n0,12345678901234567890,0\n0,0,12345678901234567890"),
+			"12345678901234567890\n",
+			200,
+		},
+		{
 			"empty-csv",
 			[]byte{},
 			"0\n",
@@ -193,12 +187,6 @@ func TestHandleSum(t *testing.T) {
 			[]byte("-1"),
 			"-1\n",
 			200,
-		},
-		{
-			"out-of-range-elements-csv",
-			[]byte("9223372036854775808"),
-			"Error: parsing CSV: record on line 1: strconv.Atoi: parsing \"9223372036854775808\": value out of range\n",
-			400,
 		},
 		{
 			"one-zero-csv",
@@ -221,19 +209,19 @@ func TestHandleSum(t *testing.T) {
 		{
 			"non-integer-literals",
 			[]byte("1, 2, -3.234\n1,-2.121,3\n1.983,2,-3\n"),
-			"Error: parsing CSV: record on line 1: strconv.Atoi: parsing \"-3.234\": invalid syntax\n",
+			"Error: parsing CSV: record on line 1: parsing \"-3.234\": invalid syntax\n",
 			400,
 		},
 		{
 			"non-numeric-literals",
 			[]byte("1&fl-, 2,3\n1fl-, 2,3\n1fl-,2,3\n"),
-			"Error: parsing CSV: record on line 1: strconv.Atoi: parsing \"1&fl-\": invalid syntax\n",
+			"Error: parsing CSV: record on line 1: parsing \"1&fl-\": invalid syntax\n",
 			400,
 		},
 		{
 			"only-commas",
 			[]byte(",,\n,,\n,,\n"),
-			"Error: parsing CSV: record on line 1: strconv.Atoi: parsing \"\": invalid syntax\n",
+			"Error: parsing CSV: record on line 1: parsing \"\": invalid syntax\n",
 			400,
 		},
 		{
@@ -274,6 +262,12 @@ func TestHandleMultiply(t *testing.T) {
 			200,
 		},
 		{
+			"large-integers",
+			[]byte("-12345678901234567890,1,1\n1,1,1\n1,1,1"),
+			"-12345678901234567890\n",
+			200,
+		},
+		{
 			"empty-csv",
 			[]byte{},
 			"0\n",
@@ -284,12 +278,6 @@ func TestHandleMultiply(t *testing.T) {
 			[]byte("-1"),
 			"-1\n",
 			200,
-		},
-		{
-			"out-of-range-elements-csv",
-			[]byte("9223372036854775808"),
-			"Error: parsing CSV: record on line 1: strconv.Atoi: parsing \"9223372036854775808\": value out of range\n",
-			400,
 		},
 		{
 			"one-zero-csv",
@@ -312,19 +300,19 @@ func TestHandleMultiply(t *testing.T) {
 		{
 			"non-integer-literals",
 			[]byte("1, 2, -3.234\n1,-2.121,3\n1.983,2,-3\n"),
-			"Error: parsing CSV: record on line 1: strconv.Atoi: parsing \"-3.234\": invalid syntax\n",
+			"Error: parsing CSV: record on line 1: parsing \"-3.234\": invalid syntax\n",
 			400,
 		},
 		{
 			"non-numeric-literals",
 			[]byte("1&fl-, 2,3\n1fl-, 2,3\n1fl-,2,3\n"),
-			"Error: parsing CSV: record on line 1: strconv.Atoi: parsing \"1&fl-\": invalid syntax\n",
+			"Error: parsing CSV: record on line 1: parsing \"1&fl-\": invalid syntax\n",
 			400,
 		},
 		{
 			"only-commas",
 			[]byte(",,\n,,\n,,\n"),
-			"Error: parsing CSV: record on line 1: strconv.Atoi: parsing \"\": invalid syntax\n",
+			"Error: parsing CSV: record on line 1: parsing \"\": invalid syntax\n",
 			400,
 		},
 		{
@@ -377,12 +365,6 @@ func TestHandleInvert(t *testing.T) {
 			200,
 		},
 		{
-			"out-of-range-elements-csv",
-			[]byte("9223372036854775808"),
-			"Error: parsing CSV: record on line 1: strconv.Atoi: parsing \"9223372036854775808\": value out of range\n",
-			400,
-		},
-		{
 			"only-empty-lines",
 			[]byte("\n\n\n\n\r\n"),
 			"\n",
@@ -397,19 +379,19 @@ func TestHandleInvert(t *testing.T) {
 		{
 			"non-integer-literals",
 			[]byte("1, 2, -3.234\n1,-2.121,3\n1.983,2,-3\n"),
-			"Error: parsing CSV: record on line 1: strconv.Atoi: parsing \"-3.234\": invalid syntax\n",
+			"Error: parsing CSV: record on line 1: parsing \"-3.234\": invalid syntax\n",
 			400,
 		},
 		{
 			"non-numeric-literals",
 			[]byte("1&fl-, 2,3\n1fl-, 2,3\n1fl-,2,3\n"),
-			"Error: parsing CSV: record on line 1: strconv.Atoi: parsing \"1&fl-\": invalid syntax\n",
+			"Error: parsing CSV: record on line 1: parsing \"1&fl-\": invalid syntax\n",
 			400,
 		},
 		{
 			"only-commas",
 			[]byte(",,\n,,\n,,\n"),
-			"Error: parsing CSV: record on line 1: strconv.Atoi: parsing \"\": invalid syntax\n",
+			"Error: parsing CSV: record on line 1: parsing \"\": invalid syntax\n",
 			400,
 		},
 		{
