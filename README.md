@@ -28,5 +28,5 @@ curl -F 'file=@/path/matrix.csv' "localhost:8080/invert"
 
 Testing the stream (example) API:
 ```
-curl -T '/path/matrix.csv' "localhost:8080/stream/echo"
+curl -s -T '/path/matrix.csv' "localhost:8080/stream/echo"
 ```
