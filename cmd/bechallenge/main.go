@@ -28,14 +28,14 @@ func init() {
 func main() {
 	mw := webApiMiddleware
 
-	// Web API
+	// Web API (complete).
 	h.HandleFunc("/echo", mw(handleEcho))
 	h.HandleFunc("/invert", mw(handleInvert))
 	h.HandleFunc("/flatten", mw(handleFlatten))
 	h.HandleFunc("/sum", mw(handleSum))
 	h.HandleFunc("/multiply", mw(handleMultiply))
 
-	// Stream API
+	// Stream API (example).
 	h.HandleFunc("/stream/echo", handleEchoStream)
 
 	h.ListenAndServe(":8080", nil)

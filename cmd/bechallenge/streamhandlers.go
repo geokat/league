@@ -9,8 +9,17 @@ import (
 	"strings"
 )
 
-// Not using http.Error() when handling errors here as setting headers
-// in the middle of a stream is impossible.
+// An example of a zero-allocation echo API handler where the payload
+// is processed in stream while being uploaded. This way we can handle
+// very large uploads without exhausting memory.
+//
+// Send request with:
+//
+//	curl -s -T matrix.csv "localhost:8080/stream/echo"
+//
+// Flatten, Sum and Multiply can also be implemented as stream APIs.
+// Invert is not a good fit because it requires reading in all of the
+// body before it can start producing output.
 func handleEchoStream(w h.ResponseWriter, r *h.Request) {
 	rdr := csv.NewReader(r.Body)
 	for {
@@ -21,6 +30,8 @@ func handleEchoStream(w h.ResponseWriter, r *h.Request) {
 			if err == io.EOF {
 				break
 			} else if errors.As(err, &pe) {
+				// Not using http.Error() as setting headers in the
+				// middle of a stream is impossible.
 				_, err := fmt.Fprintln(w, "Error: parsing CSV: "+pe.Error())
 				if err != nil {
 					l.Error("writing response error message", "error", err)
