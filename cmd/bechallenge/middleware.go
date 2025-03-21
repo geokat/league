@@ -28,6 +28,8 @@ func webApiMiddleware(next h.HandlerFunc) h.HandlerFunc {
 					"Error: file upload size limit (%d bytes) exceeded",
 					maxUploadSize)
 				h.Error(w, m, h.StatusBadRequest)
+			} else if errors.Is(err, h.ErrNotMultipart) {
+				h.Error(w, "Error: multipart/form-data expected", h.StatusBadRequest)
 			} else {
 				l.Error("getting form file", "err", err)
 				h.Error(w, "Error: unexpected error", h.StatusInternalServerError)
