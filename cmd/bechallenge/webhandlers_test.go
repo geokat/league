@@ -25,6 +25,12 @@ func TestHandleEcho(t *testing.T) {
 			200,
 		},
 		{
+			"out-of-range-elements-csv",
+			[]byte("9223372036854775808"),
+			"Error: parsing CSV: record on line 1: strconv.Atoi: parsing \"9223372036854775808\": value out of range\n",
+			400,
+		},
+		{
 			"only-empty-lines",
 			[]byte("\n\n\n\n\r\n"),
 			"\n",
@@ -104,6 +110,12 @@ func TestHandleFlatten(t *testing.T) {
 			200,
 		},
 		{
+			"out-of-range-elements-csv",
+			[]byte("9223372036854775808"),
+			"Error: parsing CSV: record on line 1: strconv.Atoi: parsing \"9223372036854775808\": value out of range\n",
+			400,
+		},
+		{
 			"only-empty-lines",
 			[]byte("\n\n\n\n\r\n"),
 			"\n",
@@ -181,6 +193,12 @@ func TestHandleSum(t *testing.T) {
 			[]byte("-1"),
 			"-1\n",
 			200,
+		},
+		{
+			"out-of-range-elements-csv",
+			[]byte("9223372036854775808"),
+			"Error: parsing CSV: record on line 1: strconv.Atoi: parsing \"9223372036854775808\": value out of range\n",
+			400,
 		},
 		{
 			"one-zero-csv",
@@ -268,6 +286,12 @@ func TestHandleMultiply(t *testing.T) {
 			200,
 		},
 		{
+			"out-of-range-elements-csv",
+			[]byte("9223372036854775808"),
+			"Error: parsing CSV: record on line 1: strconv.Atoi: parsing \"9223372036854775808\": value out of range\n",
+			400,
+		},
+		{
 			"one-zero-csv",
 			[]byte("0"),
 			"0\n",
@@ -351,6 +375,12 @@ func TestHandleInvert(t *testing.T) {
 			[]byte("0"),
 			"0\n",
 			200,
+		},
+		{
+			"out-of-range-elements-csv",
+			[]byte("9223372036854775808"),
+			"Error: parsing CSV: record on line 1: strconv.Atoi: parsing \"9223372036854775808\": value out of range\n",
+			400,
 		},
 		{
 			"only-empty-lines",
