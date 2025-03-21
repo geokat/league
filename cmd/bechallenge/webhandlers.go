@@ -73,7 +73,7 @@ func reduce(w h.ResponseWriter, r *h.Request, multiply bool) {
 		}
 	}
 
-	// The challenge description requires a trailing "\n" in the response.
+	// The challenge spec requires a trailing "\n" in the response.
 	fmt.Fprint(w, resp, "\n")
 }
 
@@ -105,7 +105,7 @@ func echo(w h.ResponseWriter, r *h.Request, flatten bool) {
 	}
 
 	if len(resp) == 0 {
-		// The challenge description requires a trailing "\n" in the response.
+		// The challenge spec requires a trailing "\n" in the response.
 		resp += "\n"
 	} else if flatten {
 		// Replace last comma with a new line
@@ -147,7 +147,7 @@ func handleInvert(w h.ResponseWriter, r *h.Request) {
 		resp += itos(ints) + "\n"
 	}
 
-	// The challenge description requires a trailing "\n" in the response.
+	// The challenge spec requires a trailing "\n" in the response.
 	if len(resp) == 0 {
 		resp += "\n"
 	}
