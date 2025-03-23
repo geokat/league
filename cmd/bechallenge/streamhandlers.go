@@ -25,11 +25,9 @@ func handleEchoStream(w h.ResponseWriter, r *h.Request) {
 	for {
 		row, err := rdr.Read()
 		if err != nil {
-			var pe *csv.ParseError
-
 			if err == io.EOF {
 				break
-			} else if errors.As(err, &pe) {
+			} else if pe := new(csv.ParseError); errors.As(err, &pe) {
 				// Not using http.Error() as setting headers in the
 				// middle of a stream is impossible.
 				_, err := fmt.Fprintln(w, "Error: parsing CSV: "+pe.Error())

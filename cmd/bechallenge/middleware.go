@@ -22,8 +22,7 @@ func webApiMiddleware(next h.HandlerFunc) h.HandlerFunc {
 
 		f, _, err := r.FormFile("file")
 		if err != nil {
-			var mbe *h.MaxBytesError
-			if errors.As(err, &mbe) {
+			if mbe := new(h.MaxBytesError); errors.As(err, &mbe) {
 				m := fmt.Sprintf(
 					"Error: file upload size limit (%d bytes) exceeded",
 					maxUploadSize)
